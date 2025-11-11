@@ -1,0 +1,29 @@
+# filename: Dockerfile.superset
+FROM apache/superset:3.1.0
+
+# Install DuckDB SQLAlchemy + driver
+# Note: duckdb-engine provides the SQLAlchemy dialect duckdb://
+USER root
+RUN pip install --no-cache-dir \
+    duckdb==1.1.3 \
+    duckdb-engine==0.14.0 
+
+# Optional performance dependencies often used by Superset
+RUN pip install --no-cache-dir \
+    psycopg2-binary \
+    mysqlclient
+
+# Create directories for Superset app and DuckDB files
+RUN mkdir -p /app/superset_home /app/duckdb
+RUN chown -R superset:superset /app/superset_home /app/duckdb
+
+USER superset
+
+# Environment defaults (can be overridden in docker-compose)
+ENV SUPERSET_ENV=production \
+    SUPERSET_HOME=/app/superset_home \
+    SQLALCHEMY_DATABASE_URI=sqlite:////app/superset_home/superset.db
+
+# Copy an optional superset_config.py if you need custom config (omit if not used)
+# COPY superset_config.py /app/pythonpath/
+

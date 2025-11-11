@@ -1,0 +1,18 @@
+services:
+  duckdb:
+    image: duckdb/duckdb:latest
+    volumes:
+      - ./data:/data
+    ports:
+      - "3000:3000"
+  superset:
+    image: apache/superset:latest
+    depends_on:
+      - duckdb
+    ports:
+      - "8088:8088"
+    environment:
+      - SUPERSET_SECRET_KEY="acbf66680f6f4cbb1bf3296e46408bd60bb94c64003d198a4323729e2e40c2ae"
+    volumes:
+      - ./superset_home:/home/superset
+

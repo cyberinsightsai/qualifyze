@@ -1,0 +1,6 @@
+FROM duckdb/duckdb
+
+
+WORKDIR /data
+EXPOSE 8080
+CMD ["duckdb", "-ui"]
