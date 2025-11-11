@@ -55,11 +55,14 @@ def get_audit_by_country(duckdb_conn):
     return result
 
 
-def write_request_to_db(duckdb_conn, customer_id, location, request_date, request_type):
-    location = get_supplier_site_id(duckdb_conn, location)
+def write_request_to_db(duckdb_conn, customer_id, supplier, request_date, request_type):
+    supplier_name_and_location = get_suppliers_name_and_location(duckdb_conn)
+    # find the match of supplier name to get location
+    supplier_id = supplier_name_and_location[supplier_name_and_location['supplier_site_name'] == supplier]['supplier_site_id'].values[0]
+
     duckdb_conn.execute(f"""
-        INSERT INTO requests (customer_id, request_supplier_site_id, request_date, requested_standard)
-        VALUES ('{customer_id}', '{location}', '{request_date}', '{request_type}')
+        INSERT INTO requests (customer_id, requested_supplier_site_id, request_date, requested_standard)
+        VALUES ('{customer_id}', '{supplier_id}', '{request_date}', '{request_type}')
     """)
     return duckdb_conn.commit()
 
@@ -76,7 +79,7 @@ def get_supplier_site_id(duckdb_conn, location):
     
 def get_suppliers_name_and_location(duckdb_conn):
     query = f"""
-        SELECT supplier_site_id, supplier_site_name, supplier_site_location FROM suppliers
+        SELECT supplier_site_id, supplier_site_name, supplier_site_country FROM suppliers  where supplier_site_availability = true
     """
     result = duckdb_conn.sql(query).df()
     return result

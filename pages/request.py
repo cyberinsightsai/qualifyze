@@ -3,10 +3,10 @@ import tools.qdb as qdb
 import tools.utils as utils
 
 # function to validate the request from the customer point of view
-def customer_validate_request(customer_id, location, request_date, request_type):
+def customer_validate_request(customer_id, supplier, request_date, request_type):
     #check that contains who, where and when
-    if not customer_id or not location or not request_date:
-        st.error("Please fill in all required fields: Customer ID, Location, and Request Date.")
+    if not customer_id or not supplier or not request_date:
+        st.error("Please fill in all required fields: Customer ID, Supplier, and Request Date.")
         return False
     #check that request type is valid
     valid_request_types = ["GMP", "GVP", "GCP"]
@@ -24,7 +24,7 @@ def customer_validate_request(customer_id, location, request_date, request_type)
         return False
 
     st.success("Request is valid and can be processed.")
-    return True if  utils.write_request_to_db(qdb.duckdb_conn,customer_id, location, request_date, request_type) else False
+    return True if  utils.write_request_to_db(qdb.duckdb_conn,customer_id, supplier, request_date, request_type) else False
 
 
 
@@ -34,14 +34,15 @@ st.title("Request Validator and Overview")
 
 st.header("New Request")
 
+supplier_name_and_location = utils.get_suppliers_name_and_location(qdb.duckdb_conn)
+
+
 with st.form("request_form"):
     customer_id = st.selectbox("Customer ID", [1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010])
-    ## TODO: pending to get the list of suppliers and locations from the database and list them here
-    supplier = st.selectbox("Supplier", utils.get_suppliers_name_and_location(qdb.duckdb_conn) )
-    location = st.text_input("Location")
+    supplier = st.selectbox("Supplier", supplier_name_and_location['supplier_site_name'])
     request_date = st.date_input("Request Date")
     request_type = st.selectbox("Request Type", ["GMP", "GVP", "GCP"])
     submit_button = st.form_submit_button("Evaluate Request")
 
 if submit_button:
-    customer_validate_request(customer_id, location, request_date, request_type)
+    customer_validate_request(customer_id, supplier, request_date, request_type)
