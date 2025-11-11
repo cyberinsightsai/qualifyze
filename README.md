@@ -3,7 +3,7 @@
 The following code process incoming requests ingested through an API using a csv file containing the information of each one.
 
 ## Requirements
-- Code is written in Go Lang.
+- Code is written in Python.
 - API functions:
  - Load file
 - If any rule is not accomplished a warning must be rised
