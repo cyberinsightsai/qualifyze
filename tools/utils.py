@@ -84,3 +84,81 @@ def get_suppliers_name_and_location(duckdb_conn):
     result = duckdb_conn.sql(query).df()
     return result
     
+
+def get_audit_type_by_date(duckdb_conn):
+    query = f"""
+        SELECT requested_standard, request_date, count(*) as total_requests 
+        FROM requests 
+        where  requested_standard IS NOT NULL
+        GROUP BY requested_standard, request_date
+        ORDER BY request_date
+    """
+    result = duckdb_conn.sql(query).df()
+    return result
+
+
+def get_audits_by_date(duckdb_conn):
+    query = f"""
+        SELECT date_trunc('day', request_date) as ds, count(*) as y 
+        FROM requests 
+        where  requested_standard IS NOT NULL
+        GROUP BY ds
+        ORDER BY ds
+    """
+    result = duckdb_conn.sql(query).df()
+    return result
+
+def avg_timeof_resolution(duckdb_conn):
+    query = f"""
+        select 
+        round(avg(consumed_date-reserved_date),1) as avg_timeof_resolution
+        from FACT_REQUEST_ALL
+        where consumed_date is not null
+    """
+    result = duckdb_conn.sql(query).df().iloc[0, 0]
+    return result
+
+def get_credits_by_customer(duckdb_conn):
+    query = f"""
+        select 
+        round(avg(available_credits),1) as avg_credits_by_customer
+        from (
+            select customer_id, count(credit_id) as available_credits
+            from credits
+            where credit_state = 'available'
+            group by customer_id
+        )
+    """
+    result = duckdb_conn.sql(query).df().iloc[0, 0]
+    return result
+
+
+def get_90d_requests(duckdb_conn):
+    query = f"""
+        select 
+            credit_state
+        from FACT_REQUEST_ALL
+        where  request_date >= current_date - interval '90' day
+    """
+    result = duckdb_conn.sql(query).df()
+    return result
+
+def get_valid_requests(duckdb_conn):
+    query = f"""
+        select 
+        count(*) as valid_requests
+        from FACT_REQUEST_ALL
+        where credit_state = 'reserved' and request_date >= current_date - interval '30' day
+    """
+    result = duckdb_conn.sql(query).df().iloc[0, 0]
+    return result
+
+def get_finished_requests(duckdb_conn):
+    query = f"""
+        select 
+        count(*) as finished_requests
+        from FACT_REQUEST_ALL
+        where credit_state = 'consumed' and request_date >= current_date - interval '30' day
+    """
+    result = duckdb_conn.sql(query).df().iloc[0, 0]
+    return result

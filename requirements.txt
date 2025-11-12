@@ -1,2 +1,5 @@
 duckdb
 streamlit
+prophet
+pandas
+plotly
