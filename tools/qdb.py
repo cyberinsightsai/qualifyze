@@ -155,6 +155,6 @@ def setup_database(duckdb_conn):
                 )
                 SELECT * FROM final_rows
     """)
-    print("FACT_REQUEST_ALL table created.")
+    print("FACT_REQUEST table created.")
 
     duckdb_conn.commit()

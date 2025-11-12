@@ -112,7 +112,7 @@ def avg_timeof_resolution(duckdb_conn):
     query = f"""
         select 
         round(avg(consumed_date-reserved_date),1) as avg_timeof_resolution
-        from FACT_REQUEST_ALL
+        from FACT_REQUESTS
         where consumed_date is not null
     """
     result = duckdb_conn.sql(query).df().iloc[0, 0]
@@ -137,7 +137,7 @@ def get_90d_requests(duckdb_conn):
     query = f"""
         select 
             credit_state
-        from FACT_REQUEST_ALL
+        from FACT_REQUESTS
         where  request_date >= current_date - interval '90' day
     """
     result = duckdb_conn.sql(query).df()
@@ -147,7 +147,7 @@ def get_valid_requests(duckdb_conn):
     query = f"""
         select 
         count(*) as valid_requests
-        from FACT_REQUEST_ALL
+        from FACT_REQUESTS
         where credit_state = 'reserved' and request_date >= current_date - interval '30' day
     """
     result = duckdb_conn.sql(query).df().iloc[0, 0]
@@ -157,7 +157,7 @@ def get_finished_requests(duckdb_conn):
     query = f"""
         select 
         count(*) as finished_requests
-        from FACT_REQUEST_ALL
+        from FACT_REQUESTS
         where credit_state = 'consumed' and request_date >= current_date - interval '30' day
     """
     result = duckdb_conn.sql(query).df().iloc[0, 0]

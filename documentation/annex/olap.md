@@ -4,7 +4,7 @@
 ```mermaid
 erDiagram
     %% Big Fact table
-    FACT_REQUEST_ALL {
+    FACT_REQUEST {
         int id_request PK
         date request_date
         string requested_standard
@@ -74,10 +74,10 @@ erDiagram
     }
 
     %% Relationships
-    DIM_CUSTOMER ||--o{ FACT_REQUEST_ALL : ""
-    DIM_SUPPLIER ||--o{ FACT_REQUEST_ALL : ""
-    DIM_SUPPLIER_SITE ||--o{ FACT_REQUEST_ALL : ""
-    DIM_SUPPLIER_BLACKLIST ||--o{ FACT_REQUEST_ALL : ""
-    DIM_CREDIT ||--o{ FACT_REQUEST_ALL : ""
+    DIM_CUSTOMER ||--o{ FACT_REQUEST : ""
+    DIM_SUPPLIER ||--o{ FACT_REQUEST : ""
+    DIM_SUPPLIER_SITE ||--o{ FACT_REQUEST : ""
+    DIM_SUPPLIER_BLACKLIST ||--o{ FACT_REQUEST : ""
+    DIM_CREDIT ||--o{ FACT_REQUEST : ""
 
 ```
