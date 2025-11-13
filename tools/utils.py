@@ -162,3 +162,24 @@ def get_finished_requests(duckdb_conn):
     """
     result = duckdb_conn.sql(query).df().iloc[0, 0]
     return result
+
+
+def is_supplier_available(duckdb_conn, supplier_site_id):
+    query = f"""
+        SELECT supplier_site_availability FROM suppliers WHERE supplier_site_id = '{supplier_site_id}' LIMIT 1
+    """
+    result = duckdb_conn.sql(query).df()
+    if not result.empty:
+        return result.iloc[0, 0]
+    else:
+        return False
+    
+def is_supplier_blacklisted(duckdb_conn, supplier_site_id, request_date):
+    query = f"""
+        SELECT * FROM blacklist WHERE supplier_site_id = '{supplier_site_id}' AND blacklist_since <= '{request_date}' AND blacklist_until >= '{request_date}' LIMIT 1
+    """
+    result = duckdb_conn.sql(query).df()
+    if not result.empty:
+        return result.iloc[0, 0]
+    else:
+        return False
