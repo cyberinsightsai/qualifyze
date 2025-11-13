@@ -63,7 +63,7 @@ The approach to a ER design was started by de CSV documents and assuming they ar
 ### 3.1 Validation flow
 The validation understood is this one below:
 
-![Validation flow](https://github.com/cyberinsightsai/qualifyze/blob/main/documentation/annex/images/validation_diagram.png)
+![Validation flow](https://github.com/cyberinsightsai/qualifyze/blob/00c07c747b5940b4331684055afad51b26625e4b/documentation/annex/images/validation_diagram.png)
 
 [source markdown](documentation/annex/validation_diagram.md)
 
@@ -71,14 +71,14 @@ The validation understood is this one below:
 ### 3.2 OLTP - ER
 
 The current transactional definition is:
-![OLTP ER](https://github.com/cyberinsightsai/qualifyze/blob/main/documentation/annex/images/oltp_er.png)
+![OLTP ER](https://github.com/cyberinsightsai/qualifyze/blob/00c07c747b5940b4331684055afad51b26625e4b/documentation/annex/images/oltp_er.png)
 
 [source markdown](documentation/annex/oltp.md)
 
 ### 3.3 OLAP - ER
 
 The proposed analytical definition is below:
-![OLTP ER](https://github.com/cyberinsightsai/qualifyze/blob/main/documentation/annex/images/olap_er.png)
+![OLTP ER](https://github.com/cyberinsightsai/qualifyze/blob/00c07c747b5940b4331684055afad51b26625e4b/documentation/annex/images/olap_er.png)
 
 [source markdown](documentation/annex/olap.md)
 
