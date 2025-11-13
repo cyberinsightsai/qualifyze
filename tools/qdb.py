@@ -97,7 +97,7 @@ def setup_database(duckdb_conn):
                         s.supplier_site_name,
                         s.supplier_site_country,
                         s.supplier_site_address,
-                        s.supplier_site_availability,
+                        s.supplier_site_availability
                     FROM suppliers s
                 ),
 

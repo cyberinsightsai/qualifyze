@@ -18,10 +18,10 @@ def customer_validate_request(customer_id, supplier, request_date, request_type)
     # check customer has enough credits
     # GMP = 1 credit, GVP = 2 credits, GCP = 3 credits
     required_credits = {"GMP": 1, "GVP": 2, "GCP": 3}
-    print(required_credits[request_type])
-    print(utils.get_customer_credits(qdb.duckdb_conn,customer_id))
-    if not utils.get_customer_credits(qdb.duckdb_conn,customer_id) > required_credits[request_type]:
-        st.error(f"Customer does not have enough credits for {request_type}. Required: {required_credits[request_type]}.")
+    customer_credits = utils.get_customer_credits(qdb.duckdb_conn, customer_id)
+
+    if customer_credits < required_credits[request_type]:
+        st.error(f"Customer does not have enough credits for {request_type}. Required: {required_credits[request_type]}, Available: {customer_credits}.")
         return False
 
     st.success("Request is valid and can be processed.")
@@ -30,7 +30,7 @@ def customer_validate_request(customer_id, supplier, request_date, request_type)
 
 def supplier_validate_request(supplier, request_date):
     # check supplier is not blacklisted
-    if utils.is_supplier_blacklisted(qdb.duckdb_conn, supplier, request_date):
+    if not utils.is_supplier_blacklisted(qdb.duckdb_conn, supplier, request_date):
         st.error("Supplier is blacklisted and cannot process requests.")
         return False
     else: 
@@ -48,8 +48,10 @@ st.header("New Request")
 
 sup_df = utils.get_suppliers_name_and_location(qdb.duckdb_conn)
 
-sup_id = sup_df[sup_df['supplier_site_name'] == 'Site 001']['supplier_site_id'].values[0]
-
+# Check if suppliers are available
+if sup_df.empty:
+    st.error("No suppliers available. Please contact administrator.")
+    st.stop()
 
 with st.form("request_form"):
     customer_id = st.selectbox("Customer ID", [1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010], index=None, placeholder="Select a customer ID")
@@ -66,10 +68,21 @@ if submit_button:
     if customer_validate_request(customer_id, supplier, request_date, request_type):
         st.write("Validating Supplier.")
         with st.spinner("Validating...", show_time=True):
-            time.sleep(2)   
-        if supplier_validate_request(sup_df[sup_df['supplier_site_name']== supplier]['supplier_site_id'].values[0], request_date):
-            st.success("Request has been successfully validated and recorded.") 
+            time.sleep(2)
+
+        # Get supplier ID safely
+        supplier_match = sup_df[sup_df['supplier_site_name'] == supplier]
+        if supplier_match.empty:
+            st.error("Supplier not found.")
         else:
-            st.error("Supplier validation failed.")
+            supplier_id = supplier_match['supplier_site_id'].values[0]
+            if supplier_validate_request(supplier_id, request_date):
+                st.success("Request has been successfully validated and recorded.")
+            else:
+                st.error("Supplier validation failed.")
     else:
         st.error("Customer validation failed.")
+
+
+with st.expander("View All Requests"):
+    st.dataframe(utils.get_all_requests(qdb.duckdb_conn))
