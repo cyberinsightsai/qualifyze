@@ -80,6 +80,7 @@ coverage/ test-results/ junit-report.xml
 
 # Python (if present)
 .venv
+.claude
 __pycache__
 *.py[cod]
 *.egg-info/
