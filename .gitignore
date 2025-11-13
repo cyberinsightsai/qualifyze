@@ -79,10 +79,16 @@ docker-compose.*.yml
 coverage/ test-results/ junit-report.xml
 
 # Python (if present)
-__pycache__/
+.venv
+__pycache__
 *.py[cod]
 *.egg-info/
 dist-info/
+documentation/instructions
+tools/__pycache__
+
+## DuckDB database
+*.db*
 
 # Temporary / lock files
 *.lock
