@@ -90,6 +90,7 @@ tools/__pycache__
 
 ## DuckDB database
 *.db*
+*.duckdb*
 
 # Temporary / lock files
 *.lock
