@@ -63,7 +63,7 @@ The approach to a ER design was started by de CSV documents and assuming they ar
 ### 3.1 Validation flow
 The validation understood is this one below:
 
-![Validation flow](https://github.com/cyberinsightsai/qualifyze/blob/00c07c747b5940b4331684055afad51b26625e4b/documentation/annex/images/validation_diagram.png)
+![Validation flow](https://github.com/cyberinsightsai/qualifyze/blob/00c07c747b5940b4331684055afad51b26625e4b/documentation/annex/images/validation_diagram.png?raw=true )
 
 [source markdown](documentation/annex/validation_diagram.md)
 
@@ -71,14 +71,14 @@ The validation understood is this one below:
 ### 3.2 OLTP - ER
 
 The current transactional definition is:
-![OLTP ER](https://github.com/cyberinsightsai/qualifyze/blob/00c07c747b5940b4331684055afad51b26625e4b/documentation/annex/images/oltp_er.png)
+![OLTP ER](https://github.com/cyberinsightsai/qualifyze/blob/00c07c747b5940b4331684055afad51b26625e4b/documentation/annex/images/oltp_er.png?raw=true )
 
 [source markdown](documentation/annex/oltp.md)
 
 ### 3.3 OLAP - ER
 
 The proposed analytical definition is below:
-![OLTP ER](https://github.com/cyberinsightsai/qualifyze/blob/00c07c747b5940b4331684055afad51b26625e4b/documentation/annex/images/olap_er.png)
+![OLTP ER](https://github.com/cyberinsightsai/qualifyze/blob/00c07c747b5940b4331684055afad51b26625e4b/documentation/annex/images/olap_er.png?raw=true )
 
 [source markdown](documentation/annex/olap.md)
 
@@ -101,9 +101,11 @@ The following table propose technology changes or adaptations to evolve from PoC
 In this section you can find ideas that came to my mind and doubts that I had across the process.
 
 ## 4.1 Ideas
-- 
+- A model can be trained to predict the possible next request for each client, it can use a time frequency (Machine Learning) or, based on new laws and news an model can rise a possible increase of requests.
+- If a document needs to be loaded, an OCR system can do NLP for facilitate IQ officers job.
+- The risk/feasibility flag can be extended to provide suggestions or next step actions.
 
-## 4.2 Dubts, Questions and Reflections
-- What business restriction allows the Customers to submit a request with empty fields?
+## 4.2 Duobts, Questions and Reflections
+- Is there a business restriction that allows the Customers to submit a request with empty (and required) fields?
 - How can a request have credits reserved and consumed where there is no match on dates and no standard specified? **id_request = REQ00062**
-- 
+- Not clear why a Supplier is Blacklisted, but probably there is an improvement to reduce this, as it becomes a bottleneck to scale.
