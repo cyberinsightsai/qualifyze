@@ -49,40 +49,38 @@ Audit request process needs to be fast and efficient, at the same time is key to
 
 In this section I propose a set of questions that must be answered based on the data, to understand the current status and possible impacts that can be avoided if they can be anticipated.
 
--  How many process are still not valid but near date?
--  How many process are valid but not yet scheduled?
--  How many process are scheduled but not yet done?
--  Show the number of process on each stage:
-    - Customer pending
-    - Supplier pending
-    - IQ pending
-    - audit pending.
+-  Show the number of process on each stage for the last quarter:
+    - Open
+    - Reserved
+    - Closed
 -  How much time take on average to start an audit from request date?
-
+-  How much credits in average the customers have?
 
 ## 3. Design
 
-### 3.1 Validation flow
+The approach to a ER design was started by de CSV documents and assuming they are very similar to a OLTP system, once I analized the data contained I found that a main fact table can handle most of the observations needed.
+
+### 3.1 Validation flow
 The validation understood is this one below:
 
-![Validation flow](annex/images/validation_diagram.png)
+![Validation flow](https://github.com/cyberinsightsai/qualifyze/blob/main/documentation/annex/images/validation_diagram.png)
 
-[source markdown](annex/validation_diagram.md)
+[source markdown](documentation/annex/validation_diagram.md)
 
 
 ### 3.2 OLTP - ER
 
 The current transactional definition is:
-![OLTP ER](annex/images/oltp_er.png)
+![OLTP ER](https://github.com/cyberinsightsai/qualifyze/blob/main/documentation/annex/images/oltp_er.png)
 
-[source markdown](annex/oltp.md)
+[source markdown](documentation/annex/oltp.md)
 
 ### 3.3 OLAP - ER
 
 The proposed analytical definition is below:
-![OLTP ER](annex/images/olap_er.png)
+![OLTP ER](https://github.com/cyberinsightsai/qualifyze/blob/main/documentation/annex/images/olap_er.png)
 
-[source markdown](annex/olap.md)
+[source markdown](documentation/annex/olap.md)
 
 
 
@@ -99,10 +97,13 @@ The following table propose technology changes or adaptations to evolve from PoC
 
 ---
 
-## Improvements
+## 4. Improvements
+In this section you can find ideas that came to my mind and doubts that I had across the process.
 
+## 4.1 Ideas
+- 
 
-## Dubts, Questions and Reflections
+## 4.2 Dubts, Questions and Reflections
 - What business restriction allows the Customers to submit a request with empty fields?
 - How can a request have credits reserved and consumed where there is no match on dates and no standard specified? **id_request = REQ00062**
 - 

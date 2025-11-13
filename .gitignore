@@ -1,0 +1,101 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# Node / JavaScript
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+package-lock.json.log
+*.tgz
+
+# Build outputs
+dist/
+build/
+out/
+.tmp/
+.temp/
+coverage/
+.nyc_output/
+
+# Frameworks / Runtimes
+.next/
+.next/cache/
+.vercel/
+.svelte-kit/
+.nuxt/
+.storybook/
+.cache/
+.parcel-cache/
+
+# TypeScript
+*.tsbuildinfo
+
+# Environment / secrets
+.env
+.env.local
+.env.*.local
+.env.test
+.env.production
+.env.*.secret
+secrets.*
+credentials.*
+
+# Editor / IDE
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+*.swp
+
+# JetBrains
+*.iml
+out/
+
+# Logs
+logs/
+*.log
+
+# Debug / profiler
+chrome_debugger_profile*
+ipdb_session*
+
+# Docker
+docker-compose.override.yml
+docker-compose.*.yml
+
+# CI
+coverage/ test-results/ junit-report.xml
+
+# Python (if present)
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist-info/
+
+# Temporary / lock files
+*.lock
+*.pid
+*.seed
+*.backup
+
+# Certificates and keys
+*.pem
+*.key
+*.crt
+
+# Misc
+*.db
+*.sqlite
+.vagrant/
