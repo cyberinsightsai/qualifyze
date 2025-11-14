@@ -13,8 +13,9 @@ The document contains 4 sections:
 
 ## 1. Assumptions
 - 1.1. The CSV files are a similar approximation to a OLTP system
-- 1.2. The customer request must be accepted even if the information is not complete and the validation must be done afterwards.
-- 1.3. The ER proposal is focused on the OLAP system for observability.
+- 1.2. The validator reject any request that does not comply with the rules.
+- 1.3. There are two ways to handle a new requests, one by one, or bulk.
+- 1.4. The ER proposal is focused on the OLAP system for observability.
 
 
 
@@ -36,6 +37,8 @@ Audit request process needs to be fast and efficient, at the same time is key to
 - **Credits accounting**: The system shall compute required credits based on audit standard with rules GMP=1×, GVP=2×, GCP=4×, verify the customer wallet balance, and upon confirmation reserve the computed credits; insufficient balance shall block progression and notify the customer.
 
 - **Supplier blacklist check**: The system shall automatically cross-check supplier/site against a maintained blacklist and mark the request as not feasible if found; blocked requests shall not proceed and shall log the reason.
+
+- **Security and data integrity**: The system shall enforce role-based access to stakeholder data, protect sensitive supplier/customer information, and ensure integrity of credit reservations and blacklist records, with tamper-evident logs. 
 
 ### Non-Functional Requirements
 
@@ -70,14 +73,14 @@ The validation understood is this one below:
 
 ### 3.2 OLTP - ER
 
-The current transactional definition is:
+The current transactional definition is below, as is considered that the transactional structure is already defined:
 ![OLTP ER](https://github.com/cyberinsightsai/qualifyze/blob/00c07c747b5940b4331684055afad51b26625e4b/documentation/annex/images/oltp_er.png?raw=true )
 
 [source markdown](documentation/annex/oltp.md)
 
 ### 3.3 OLAP - ER
 
-The proposed analytical definition is below:
+The proposed analytical definition is below, starting from an event based analytical system which can be constructed either from otlp tables in aurora exported to s3 or by events sent through a broker using a message format such as avro:
 ![OLTP ER](https://github.com/cyberinsightsai/qualifyze/blob/00c07c747b5940b4331684055afad51b26625e4b/documentation/annex/images/olap_er.png?raw=true )
 
 [source markdown](documentation/annex/olap.md)

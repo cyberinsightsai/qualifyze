@@ -112,12 +112,18 @@ def write_request_to_db(duckdb_conn, customer_id, supplier, request_date, reques
     try:
         # Find the id of supplier
         supplier_name_and_location = get_suppliers_name_and_location(duckdb_conn)
-        supplier_id = int(supplier_name_and_location[supplier_name_and_location['supplier_site_name'] == supplier]['supplier_site_id'].values[0])
-
         
-        if supplier_id is None:
-            print(f"Error: Supplier '{supplier}' not found")
+        if supplier_name_and_location.empty:
+            print(f"Error: No suppliers available in database")
             return False
+        
+        supplier_match = supplier_name_and_location[supplier_name_and_location['supplier_site_id'] == supplier]
+        
+        if supplier_match.empty:
+            print(f"Error: Supplier '{supplier}' not found in database")
+            return False
+        
+        supplier_id = int(supplier_match['supplier_site_id'].values[0])
 
         query = """
             INSERT INTO requests (customer_id, requested_supplier_site_id, request_date, requested_standard)
@@ -128,7 +134,6 @@ def write_request_to_db(duckdb_conn, customer_id, supplier, request_date, reques
         return True
     except Exception as e:
         print(f"Error writing request to database: {e}")
-        print(query, customer_id, supplier_id, request_date, request_type)
         return False
 
 

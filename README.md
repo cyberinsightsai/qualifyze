@@ -11,5 +11,5 @@ After uncompressing the zip file run:
 uv venv
 source .venv/bin/activate 
 uv pip install -r requirements.txt
-streamlit run main.py
+uv run streamlit run main.py
 ```

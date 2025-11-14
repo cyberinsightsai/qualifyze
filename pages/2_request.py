@@ -1,6 +1,7 @@
 import streamlit as st
 import tools.qdb as qdb
 import tools.utils as utils
+import pandas as pd
 import time
 
 # function to validate the request from the customer point of view
@@ -25,7 +26,7 @@ def customer_validate_request(customer_id, supplier, request_date, request_type)
         return False
 
     st.success("Request is valid and can be processed.")
-    return True if  utils.write_request_to_db(qdb.duckdb_conn,customer_id, supplier, request_date, request_type) else False
+    return True
 
 
 def supplier_validate_request(supplier, request_date):
@@ -38,7 +39,7 @@ def supplier_validate_request(supplier, request_date):
             st.error("Supplier is not available to process requests.")
             return False
         else:
-            return True
+            return True if  utils.write_request_to_db(qdb.duckdb_conn,customer_id, supplier, request_date, request_type) else False
  
 
 ## Body of the Streamlit app
@@ -83,6 +84,48 @@ if submit_button:
     else:
         st.error("Customer validation failed.")
 
+st.divider()
+
+st.header("Bulk request load")
+uploaded_file = st.file_uploader("Upload CSV file with requests", type=["csv"], help="Upload a CSV file containing multiple requests for bulk processing.")
+if uploaded_file is not None:
+    st.write("Processing bulk requests...")
+    bulk_df = pd.read_csv(uploaded_file)
+    successful_count = 0
+    failed_count = 0
+    for row in bulk_df.itertuples():
+        customer_id = row.customer_id
+        supplier_id = row.requested_supplier_site_id
+        request_date = row.request_date
+        request_type = row.requested_standard
+
+        # Get supplier name from ID
+        supplier_match = sup_df[sup_df['supplier_site_id'] == supplier_id]
+        if supplier_match.empty:
+            st.error(f"Supplier is not AVAILABLE for bulk request with ID: {supplier_id}")
+            failed_count += 1
+            continue
+        
+        supplier_name = supplier_match['supplier_site_name'].values[0]
+
+        if not customer_validate_request(customer_id, supplier_name, request_date, request_type):
+            st.error(f"Bulk request validation failed for Customer ID: {customer_id}, Supplier: {supplier_name}, Date: {request_date}, Type: {request_type}")
+            failed_count += 1
+            continue
+
+        if not supplier_validate_request(supplier_id, request_date):
+            st.error(f"Supplier validation failed for bulk request: Supplier ID: {supplier_id}, Date: {request_date}")
+            failed_count += 1
+            continue
+        
+        successful_count += 1
+    
+    st.write(f"Bulk request processing completed. Successful: {successful_count}, Failed: {failed_count}")
+
+    
+
+
+st.divider()
 
 with st.expander("View All Requests"):
     st.dataframe(utils.get_all_requests(qdb.duckdb_conn))
