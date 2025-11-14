@@ -7,7 +7,7 @@ import streamlit as st
 
 duckdb_conn = utils.get_duckdb_conn()
 
-@st.cache_resource
+
 def setup_database(duckdb_conn):
     """Set up the DuckDB database with necessary tables."""
 

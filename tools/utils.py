@@ -333,3 +333,20 @@ def is_supplier_blacklisted(duckdb_conn, supplier_site_id, request_date):
     except Exception as e:
         print(f"Error checking supplier blacklist status: {e}")
         return False
+    
+def check_table_exists(duckdb_conn, table_name, schema='main'):
+    """Check if a table exists in the database. Returns True if exists, False otherwise."""
+    try:
+            return duckdb_conn.execute(
+                """
+                SELECT 1
+                FROM information_schema.tables
+                WHERE table_schema = ?
+                AND table_name = ?
+                LIMIT 1
+                """,
+                [schema.lower(), table_name.lower()]
+            ).fetchone() is not None
+    except Exception as e:
+        print(f"Error checking if table exists: {e}")
+        return False

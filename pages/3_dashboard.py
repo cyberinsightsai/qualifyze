@@ -79,26 +79,37 @@ audits_by_day = utils.get_audits_by_date(qdb.duckdb_conn)
 
 if not audits_by_day.empty and len(audits_by_day) > 2:
     try:
-        # Train Prophet
-        m = Prophet()
-        m.fit(audits_by_day)
+        # Validate and clean data
+        audits_by_day = audits_by_day.dropna()
+        audits_by_day = audits_by_day[audits_by_day['y'] > 0]  # Remove zero or negative values
+        
+        if len(audits_by_day) < 3:
+            st.info("Not enough valid data points to generate forecast. Need at least 3 data points.")
+        else:
+            # Train Prophet with suppressed warnings
+            import warnings
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                m = Prophet(yearly_seasonality=False, daily_seasonality=False, interval_width=0.95)
+                m.fit(audits_by_day)
 
-        # Make future dataframe and forecast
-        future = m.make_future_dataframe(periods=30, freq='d')
-        forecast = m.predict(future)
-        st.write(m.plot_components(forecast))
-        # there can't be negative requests
-        forecast.loc[forecast['yhat'] < 0, 'yhat'] = 0
-        forecast.loc[forecast['yhat_lower'] < 0, 'yhat_lower'] = 0
-        # show only the forcasted values from now on
-        forecast = forecast[forecast['ds'] >= audits_by_day['ds'].max()]
+                # Make future dataframe and forecast
+                future = m.make_future_dataframe(periods=30, freq='d')
+                forecast = m.predict(future)
+                
+            st.write(m.plot_components(forecast))
+            # there can't be negative requests
+            forecast.loc[forecast['yhat'] < 0, 'yhat'] = 0
+            forecast.loc[forecast['yhat_lower'] < 0, 'yhat_lower'] = 0
+            # show only the forcasted values from now on
+            forecast = forecast[forecast['ds'] >= audits_by_day['ds'].max()]
 
-        st.subheader("Forecast for next month")
-        st.area_chart(pd.DataFrame({
-                "forecast": forecast.set_index("ds")["yhat"],
-                "lowest": forecast.set_index("ds")["yhat_lower"],
-                "highest": forecast.set_index("ds")["yhat_upper"]
-            }), use_container_width=True)
+            st.subheader("Forecast for next month")
+            st.area_chart(pd.DataFrame({
+                    "forecast": forecast.set_index("ds")["yhat"],
+                    "lowest": forecast.set_index("ds")["yhat_lower"],
+                    "highest": forecast.set_index("ds")["yhat_upper"]
+                }))
     except Exception as e:
         st.error(f"Error generating forecast: {e}")
 else:
